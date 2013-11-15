@@ -65,7 +65,9 @@ static const int kCloudControllerOfflineMessageMax = 50;
   [GTMHTTPFetcher setLoggingEnabled:YES];
 #endif
 
-  [self assertClientInfo];
+  if (_isAuthEnabled) {
+    [self assertClientInfo];
+  }
 
   // Register notification center to receive notification when device token
   // is available
@@ -120,8 +122,8 @@ static const int kCloudControllerOfflineMessageMax = 50;
 
   _clientID = clientID;
   _clientSecret = clientSecret;
-  _isAuthEnabled = authEnabled;
   _chainName = chainName;
+  _isAuthEnabled = authEnabled;
   _serviceURL = serviceURL;
   _isSubscribe = NO;
   _futureQuerySentDict = [NSMutableDictionary dictionary];
