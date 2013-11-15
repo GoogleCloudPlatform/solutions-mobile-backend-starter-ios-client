@@ -60,6 +60,7 @@ static int const kLeftRightScreenMargin = 110;
       [[CloudControllerHelper alloc] initWithClientID:kCloudBackendClientID
                                                secret:kCloudBackendClientSecret
                                             chainName:kCloudBackendChainName
+                                          authEnabled:kAuthEnabled
                                            serviceURL:kCloudBackendServiceURL
                                              delegate:self];
   [_controllerHelper startCommonServices];

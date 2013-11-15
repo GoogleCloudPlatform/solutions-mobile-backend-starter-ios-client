@@ -23,6 +23,9 @@ static NSString *const kCloudBackendClientID = @"{{{ INSERT ID }}}";
 // Secret.
 static NSString *const kCloudBackendClientSecret = @"{{{ INSERT SECRET }}}";
 
+// Set default user authentication enabled or disabled.
+static bool *const kAuthEnabled = false;
+
 // Arbitrary name for local keychain name.
 static NSString *const kCloudBackendChainName = @"cloudbackendiosclient";
 

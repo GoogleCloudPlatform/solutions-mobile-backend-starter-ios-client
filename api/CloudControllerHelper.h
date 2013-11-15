@@ -42,6 +42,7 @@ extern NSString *const kCloudControllerDeviceTokenNotification;
 - (id)initWithClientID:(NSString *)clientID
                 secret:(NSString *)clientSecret
              chainName:(NSString *)chainName
+           authEnabled:(BOOL)authEnabled
             serviceURL:(NSString *)serviceURL
               delegate:(id<CloudControllerDelegate>)delegate;
 

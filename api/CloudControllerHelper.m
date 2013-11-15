@@ -40,6 +40,7 @@ NSString *const kCloudControllerDeviceTokenNotification =
   NSMutableDictionary *_futureQuerySentDict;
   NSString *_clientID;
   NSString *_clientSecret;
+  BOOL _isAuthEnabled;
   NSString *_chainName;
   NSString *_serviceURL;
   BOOL _isSubscribe; // broadcast subscription only once per instance
@@ -64,7 +65,9 @@ static const int kCloudControllerOfflineMessageMax = 50;
   [GTMHTTPFetcher setLoggingEnabled:YES];
 #endif
 
-  [self assertClientInfo];
+  if (_isAuthEnabled) {
+    [self assertClientInfo];
+  }
 
   // Register notification center to receive notification when device token
   // is available
@@ -85,18 +88,22 @@ static const int kCloudControllerOfflineMessageMax = 50;
   [CloudEntity setCloudEndpointService:self.cloudEndpointService];
   [_entityCollection setCloudEndpointService:self.cloudEndpointService];
 
-  // Delegate the authentication flow to CloudAuthenticationHelper, but
-  // this class implements CloudAuthenticationDelegate so that
-  // CloudAuthenticationHelper can callback for actions after authentciation
-  // is completed.
-  _authenticator = [[CloudAuthenticator alloc] initWithClientID:_clientID
-                                                   clientSecret:_clientSecret
-                                                clientChainName:_chainName];
-  _authenticator.delegate = self;
-
-  // This will eventually call authenticationComplete selector
-  UIViewController *controller = [_delegate presentingViewController];
-  [_authenticator authenticateUserWithInController:controller];
+  if (_isAuthEnabled) {
+    // Delegate the authentication flow to CloudAuthenticationHelper, but
+    // this class implements CloudAuthenticationDelegate so that
+    // CloudAuthenticationHelper can callback for actions after authentciation
+    // is completed.
+    _authenticator = [[CloudAuthenticator alloc] initWithClientID:_clientID
+                                                     clientSecret:_clientSecret
+                                                  clientChainName:_chainName];
+    _authenticator.delegate = self;
+    
+    // This will eventually call authenticationComplete selector
+    UIViewController *controller = [_delegate presentingViewController];
+    [_authenticator authenticateUserWithInController:controller];
+  } else {
+    [self signInWithCloudControllerHelper:self];
+  }
 }
 
 - (id)init {
@@ -110,6 +117,7 @@ static const int kCloudControllerOfflineMessageMax = 50;
 - (id)initWithClientID:(NSString *)clientID
                 secret:(NSString *)clientSecret
              chainName:(NSString *)chainName
+           authEnabled:(BOOL)authEnabled
             serviceURL:(NSString *)serviceURL
               delegate:(id<CloudControllerDelegate>)delegate {
   self = [super init];
@@ -117,6 +125,7 @@ static const int kCloudControllerOfflineMessageMax = 50;
   _clientID = clientID;
   _clientSecret = clientSecret;
   _chainName = chainName;
+  _isAuthEnabled = authEnabled;
   _serviceURL = serviceURL;
   _isSubscribe = NO;
   _futureQuerySentDict = [NSMutableDictionary dictionary];
