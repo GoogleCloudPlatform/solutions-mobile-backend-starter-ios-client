@@ -101,6 +101,8 @@ static const int kCloudControllerOfflineMessageMax = 50;
     // This will eventually call authenticationComplete selector
     UIViewController *controller = [_delegate presentingViewController];
     [_authenticator authenticateUserWithInController:controller];
+  } else {
+    [self signInWithCloudControllerHelper:self];
   }
 }
 
